@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { FiArrowLeft } from 'react-icons/fi'
 import {
@@ -6,14 +7,29 @@ import {
   Marker,
   MapContainerProps,
 } from 'react-leaflet'
+import api from '../../services/api'
 
 import Logo from '../../assets/logo.svg'
 
 import './CreatePoint.css'
 
+interface ItemProps {
+  id: number
+  title: string
+  image_url: string
+}
+
 export default function CreatePoint({
   center = [51.505, -0.09],
 }: MapContainerProps) {
+  const [items, setItems] = useState<ItemProps[]>([])
+
+  useEffect(() => {
+    api.get('items').then((res) => {
+      setItems(res.data)
+    })
+  }, [])
+
   return (
     <div id="page-create-point">
       <header>
@@ -92,48 +108,14 @@ export default function CreatePoint({
           </legend>
 
           <ul className="items-grid">
-            <li>
-              <img
-                src="http://localhost:3000/uploads/baterias.svg"
-                alt="Teste"
-              />
-              <span>Oleo</span>
-            </li>
-            <li>
-              <img
-                src="http://localhost:3000/uploads/baterias.svg"
-                alt="Teste"
-              />
-              <span>Oleo</span>
-            </li>
-            <li>
-              <img
-                src="http://localhost:3000/uploads/baterias.svg"
-                alt="Teste"
-              />
-              <span>Oleo</span>
-            </li>
-            <li>
-              <img
-                src="http://localhost:3000/uploads/baterias.svg"
-                alt="Teste"
-              />
-              <span>Oleo</span>
-            </li>
-            <li>
-              <img
-                src="http://localhost:3000/uploads/baterias.svg"
-                alt="Teste"
-              />
-              <span>Oleo</span>
-            </li>
-            <li>
-              <img
-                src="http://localhost:3000/uploads/baterias.svg"
-                alt="Teste"
-              />
-              <span>Oleo</span>
-            </li>
+            {items.map((item) => {
+              return (
+                <li key={item.id}>
+                  <img src={item.image_url} alt={item.title} />
+                  <span>{item.title}</span>
+                </li>
+              )
+            })}
           </ul>
         </fieldset>
 
