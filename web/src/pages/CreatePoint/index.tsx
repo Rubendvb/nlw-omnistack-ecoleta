@@ -36,6 +36,7 @@ export default function CreatePoint({
   const [ufs, setUfs] = useState<string[]>([])
   const [selectUf, setSelectUf] = useState('0')
   const [cities, setCities] = useState<string[]>([])
+  const [selectCity, setSelectCity] = useState('0')
 
   useEffect(() => {
     api.get('items').then((res) => {
@@ -76,6 +77,12 @@ export default function CreatePoint({
     const uf = e.target.value
 
     setSelectUf(uf)
+  }
+
+  function handleSelectCity(e: ChangeEvent<HTMLSelectElement>) {
+    const city = e.target.value
+
+    setSelectCity(city)
   }
 
   return (
@@ -154,7 +161,12 @@ export default function CreatePoint({
 
             <div className="field">
               <label htmlFor="uf">Cidade</label>
-              <select name="city" id="city">
+              <select
+                name="city"
+                id="city"
+                value={selectCity}
+                onChange={handleSelectCity}
+              >
                 <option value="0">Selecione uma cidade</option>
                 {cities.map((city) => {
                   return (
