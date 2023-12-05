@@ -28,9 +28,13 @@ export default function CreatePoint() {
   const [items, setItems] = useState<ItemProps[]>([])
   const [ufs, setUfs] = useState<string[]>([])
   const [selectUf, setSelectUf] = useState('0')
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    whatsapp: '',
+  })
   const [cities, setCities] = useState<string[]>([])
   const [selectCity, setSelectCity] = useState('0')
-
   const [selectedPosition, setSelectedPosition] = useState<[number, number]>([
     51.505, -0.09,
   ])
@@ -106,6 +110,12 @@ export default function CreatePoint() {
     ) : null
   }
 
+  function handleInputChange(e: ChangeEvent<HTMLInputElement>) {
+    const { name, value } = e.target
+
+    setFormData({ ...formData, [name]: value })
+  }
+
   return (
     <div id="page-create-point">
       <header>
@@ -129,18 +139,33 @@ export default function CreatePoint() {
 
           <div className="field">
             <label htmlFor="name">Nome da entidade</label>
-            <input type="text" name="name" id="name" />
+            <input
+              type="text"
+              name="name"
+              id="name"
+              onChange={handleInputChange}
+            />
           </div>
 
           <div className="field-group">
             <div className="field">
               <label htmlFor="email">E-mail</label>
-              <input type="email" name="email" id="email" />
+              <input
+                type="email"
+                name="email"
+                id="email"
+                onChange={handleInputChange}
+              />
             </div>
 
             <div className="field">
               <label htmlFor="whatsapp">Whatsapp</label>
-              <input type="text" name="whatsapp" id="whatsapp" />
+              <input
+                type="text"
+                name="whatsapp"
+                id="whatsapp"
+                onChange={handleInputChange}
+              />
             </div>
           </div>
         </fieldset>
