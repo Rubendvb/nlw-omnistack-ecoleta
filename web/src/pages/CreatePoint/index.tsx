@@ -2,12 +2,7 @@ import { ChangeEvent, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { FiArrowLeft } from 'react-icons/fi'
 import axios from 'axios'
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  MapContainerProps,
-} from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet'
 
 import Logo from '../../assets/logo.svg'
 
@@ -29,14 +24,16 @@ interface CityProps {
   nome: string
 }
 
-export default function CreatePoint({
-  center = [51.505, -0.09],
-}: MapContainerProps) {
+export default function CreatePoint() {
   const [items, setItems] = useState<ItemProps[]>([])
   const [ufs, setUfs] = useState<string[]>([])
   const [selectUf, setSelectUf] = useState('0')
   const [cities, setCities] = useState<string[]>([])
   const [selectCity, setSelectCity] = useState('0')
+
+  const [selectedPosition, setSelectedPosition] = useState<[number, number]>([
+    51.505, -0.09,
+  ])
 
   useEffect(() => {
     api.get('items').then((res) => {
@@ -73,6 +70,14 @@ export default function CreatePoint({
       })
   }, [selectUf])
 
+  // useEffect(() => {
+  //   navigator.geolocation.getCurrentPosition((position) => {
+  //     const { latitude, longitude } = position.coords
+
+  //     setInitialPosition([latitude, longitude])
+  //   })
+  // }, [])
+
   function handleSelectUf(e: ChangeEvent<HTMLSelectElement>) {
     const uf = e.target.value
 
@@ -83,6 +88,22 @@ export default function CreatePoint({
     const city = e.target.value
 
     setSelectCity(city)
+  }
+
+  const Markers = () => {
+    useMapEvents({
+      click(e) {
+        setSelectedPosition([e.latlng.lat, e.latlng.lng])
+      },
+    })
+
+    return selectedPosition ? (
+      <Marker
+        key={selectedPosition[0]}
+        position={selectedPosition}
+        interactive={false}
+      ></Marker>
+    ) : null
   }
 
   return (
@@ -130,13 +151,17 @@ export default function CreatePoint({
             <span>Selecione o endereço no mapa</span>
           </legend>
 
-          <MapContainer center={center} zoom={13} scrollWheelZoom={false}>
+          <MapContainer
+            center={selectedPosition}
+            zoom={13}
+            scrollWheelZoom={false}
+          >
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
 
-            <Marker position={center}></Marker>
+            <Markers />
           </MapContainer>
 
           <div className="field-group">
