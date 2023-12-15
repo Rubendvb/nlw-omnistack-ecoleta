@@ -1,4 +1,11 @@
-import { Image, View, ImageBackground, StyleSheet, Text } from 'react-native'
+import {
+  Image,
+  View,
+  ImageBackground,
+  StyleSheet,
+  Text,
+  TextInput,
+} from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import {
   GestureHandlerRootView,
@@ -7,12 +14,19 @@ import {
 
 import { Feather as Icon } from '@expo/vector-icons'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { useState } from 'react'
 
 export default function Home() {
+  const [uf, setUf] = useState('')
+  const [city, setCity] = useState('')
+
   const navigation = useNavigation<NativeStackNavigationProp<any>>()
 
   function handleNavigateToPoints() {
-    navigation.navigate('Points')
+    navigation.navigate('Points', {
+      uf,
+      city,
+    })
   }
 
   return (
@@ -28,6 +42,25 @@ export default function Home() {
           Ajudamos pessoas a encontrarem pontos de coleta de forma eficiente.
         </Text>
       </View>
+
+      <TextInput
+        style={styles.input}
+        placeholder="Digite a UF"
+        value={uf}
+        autoCapitalize="characters"
+        maxLength={2}
+        autoCorrect={false}
+        onChangeText={(text) => setUf(text)}
+        // or onChangeText={setUf}
+      />
+
+      <TextInput
+        style={styles.input}
+        placeholder="Digite a cidade"
+        value={city}
+        autoCorrect={false}
+        onChangeText={setCity}
+      />
 
       <GestureHandlerRootView style={styles.footer}>
         <RectButton style={styles.button} onPress={handleNavigateToPoints}>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import MapView, { Marker } from 'react-native-maps'
 import {
@@ -31,6 +31,11 @@ interface Point {
   longitude: number
 }
 
+interface Params {
+  uf: string
+  city: string
+}
+
 export default function Points() {
   const [items, setItems] = useState<Item[]>([])
   const [selectedItems, setSelectedItems] = useState<number[]>([])
@@ -40,6 +45,9 @@ export default function Points() {
   const [points, setPoints] = useState<Point[]>([])
 
   const navigation = useNavigation<NativeStackNavigationProp<any>>()
+  const route = useRoute()
+
+  const routeParams = route.params as Params
 
   useEffect(() => {
     async function loadPosition() {
@@ -70,14 +78,14 @@ export default function Points() {
   useEffect(() => {
     API.get('points', {
       params: {
-        city: 'Rio de Janeiro',
-        uf: 'RJ',
-        items: [1],
+        city: routeParams.city,
+        uf: routeParams.uf,
+        items: selectedItems,
       },
     }).then((res) => {
       setPoints(res.data)
     })
-  }, [])
+  }, [selectedItems])
 
   function handleNavigationBack() {
     navigation.goBack()
