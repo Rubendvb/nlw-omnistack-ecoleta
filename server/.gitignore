@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+uploads/*
+!uploads/.gitkeep
+
+*.sqlite
